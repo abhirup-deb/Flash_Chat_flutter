@@ -7,6 +7,7 @@ import 'package:flash_chat/screens/chat_screen.dart';
 void main() => runApp(FlashChat());
 
 class FlashChat extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -15,7 +16,13 @@ class FlashChat extends StatelessWidget {
           body1: TextStyle(color: Colors.black54),
         ),
       ),
-      home: WelcomeScreen(),
+      initialRoute: WelcomeScreen.id,
+      routes:{
+        WelcomeScreen.id: (context) => WelcomeScreen(),
+        'login_screen': (context) => LoginScreen(),
+        'chat_screen': (context) => ChatScreen(),
+        'registration_screen': (context) => RegistrationScreen(),
+      },
     );
   }
 }
