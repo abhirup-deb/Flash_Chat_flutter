@@ -61,43 +61,39 @@ class _WelcomeScreenState extends State<WelcomeScreen> with  SingleTickerProvide
             SizedBox(
               height: animation.value*100,
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
-                elevation: 5.0,
-                color: Colors.lightBlueAccent,
-                borderRadius: BorderRadius.circular(30.0),
-                child: MaterialButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context,LoginScreen.id);
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: Text(
-                    'Log In',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
-                color: Colors.blueAccent,
-                borderRadius: BorderRadius.circular(30.0),
-                elevation: 5.0,
-                child: MaterialButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, RegistrationScreen.id);
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: Text(
-                    'Register',
-                  ),
-                ),
-              ),
-            ),
+            RoundButton(clr: Colors.lightBlueAccent,txt: 'Log In',onPressed: () {
+             Navigator.pushNamed(context,LoginScreen.id);
+             },),
+            RoundButton(clr: Colors.blueAccent,txt: 'Register',onPressed: () {
+              Navigator.pushNamed(context, RegistrationScreen.id);
+            },),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class RoundButton extends StatelessWidget {
+ const RoundButton({this.clr,this.txt,@required this.onPressed});
+
+ final Color clr;
+ final Function onPressed;
+ final String txt;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: Material(
+        elevation: 5.0,
+        color: clr,
+        borderRadius: BorderRadius.circular(30.0),
+        child: MaterialButton(
+          onPressed: onPressed,
+          minWidth: 200.0,
+          height: 42.0,
+          child: Text(txt),
         ),
       ),
     );
