@@ -26,6 +26,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> with  SingleTickerProvide
     });
   }
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white.withOpacity(controller.value),
