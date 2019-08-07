@@ -23,7 +23,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> with  SingleTickerProvide
     controller.addListener(() {
       setState(() {
       });
-      print(animation.value);
     });
   }
   @override
