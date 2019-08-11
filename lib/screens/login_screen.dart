@@ -9,6 +9,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String email;
+  String pass;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,10 +33,13 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 48.0,
             ),
             TextField(
-              onChanged: (value) {
-                //Do something with the user input.
+                keyboardType: TextInputType.emailAddress,
+                textAlign: TextAlign.center,
+                onChanged: (value) {
+                email = value;
               },
               decoration: InputDecoration(
+                hintStyle: TextStyle(color: Colors.grey),
                 hintText: 'Enter your email',
                 contentPadding:
                     EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
@@ -56,10 +62,13 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 8.0,
             ),
             TextField(
+              obscureText: true,
+              textAlign: TextAlign.center,
               onChanged: (value) {
-                //Do something with the user input.
+                pass = value;
               },
               decoration: InputDecoration(
+                hintStyle: TextStyle(color: Colors.grey),
                 hintText: 'Enter your password.',
                 contentPadding:
                     EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
@@ -82,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 24.0,
             ),
             RoundButton(clr: Colors.lightBlueAccent,txt: 'Log In',onPressed: () {
-              Navigator.pushNamed(context,LoginScreen.id);
+
             },),
           ],
         ),

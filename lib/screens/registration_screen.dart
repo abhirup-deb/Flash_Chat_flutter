@@ -8,6 +8,9 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  String email;
+  String pass;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,13 +32,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               height: 48.0,
             ),
             TextField(
+              keyboardType: TextInputType.emailAddress,
+              textAlign: TextAlign.center,
               onChanged: (value) {
-                //Do something with the user input.
+               email = value;
               },
               decoration: InputDecoration(
-                hintText: 'Enter your email',
+                hintStyle: TextStyle(color: Colors.grey),
+                hintText: "Enter your email",
                 contentPadding:
-                    EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(32.0)),
                 ),
@@ -53,10 +59,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               height: 8.0,
             ),
             TextField(
+              obscureText: true,
+              textAlign: TextAlign.center,
               onChanged: (value) {
-                //Do something with the user input.
+                pass = value;
               },
               decoration: InputDecoration(
+                hintStyle: TextStyle(color: Colors.grey),
                 hintText: 'Enter your password',
                 contentPadding:
                     EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
@@ -78,7 +87,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
 
       RoundButton(clr: Colors.blueAccent,txt: 'Register',onPressed: () {
-        Navigator.pushNamed(context, RegistrationScreen.id);
+
       },),
       ],
      ),
