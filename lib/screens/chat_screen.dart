@@ -16,20 +16,21 @@ class _ChatScreenState extends State<ChatScreen> {
   String MessageTxt;
 
   @override
-  void setState(fn) {
-    super.setState(fn);
+  void initState() {
+    super.initState();
     getCurrentUser();
   }
-  @override
   void getCurrentUser()async {
     try {
       final user = await _auth.currentUser();
-      if (user != null)
+      if (user != null) {
         LoggedInuser = user;
-        }
+        print(LoggedInuser.email);
+      }
+     }
       catch(e){
       print(e);
-      }
+    }
   }
   Widget build(BuildContext context) {
     return Scaffold(

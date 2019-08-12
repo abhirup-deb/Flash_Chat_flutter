@@ -104,8 +104,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 });
                 try{
                     final user = await _auth.signInWithEmailAndPassword(email: email, password: pass);
-                    if(user!=null)
+                    if(user!=null) {
                       Navigator.pushNamed(context, ChatScreen.id);
+                    }
                     setState(() {
                       spinner = false;
                     });
