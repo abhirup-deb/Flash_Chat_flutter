@@ -19,6 +19,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     getCurrentUser();
+
   }
   void getCurrentUser()async {
     try {
@@ -31,6 +32,13 @@ class _ChatScreenState extends State<ChatScreen> {
       catch(e){
       print(e);
     }
+  }
+  void getMessageStream()async {
+   await for( var snapshot in _firestore.collection('messages').snapshots()){
+     for(var message in snapshot.documents){
+       print(message.data);
+     }
+   }
   }
   Widget build(BuildContext context) {
     return Scaffold(
