@@ -42,6 +42,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         leading: null,
         actions: <Widget>[
@@ -52,7 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 Navigator.pop(context);
               }),
         ],
-        title: Text('⚡️Chat'),
+        title: Center(child: Text('⚡️Chat')),
         backgroundColor: Colors.lightBlueAccent,
       ),
       body: SafeArea(
@@ -60,6 +61,32 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            StreamBuilder<QuerySnapshot>(
+              stream: _firestore.collection('messages').snapshots(),
+              builder: (context,snapshot){
+                if(!snapshot.hasData){
+                  return Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.lightBlueAccent,
+                    ),
+                  );
+                }
+               if(snapshot.hasData){
+                  final messages = snapshot.data.documents;
+                  List<Text> messageWidgets =[];
+                for(var message in messages){
+                  final msgText = message.data['text'];
+                  final msgSender = message.data['Sender'];
+                  final msgWidget = Text('$msgText from $msgSender');
+                  messageWidgets.add(msgWidget);
+                }
+                return Column(
+                  children: messageWidgets,
+
+                );
+               }
+              },
+             ),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -67,16 +94,15 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      style: TextStyle(color: Colors.black),
                       onChanged: (value) {
                         MessageTxt = value ;
-                        print(LoggedInuser.email);
                       },
                       decoration: kMessageTextFieldDecoration,
                     ),
                   ),
                   FlatButton(
                     onPressed: () {
-                      print(LoggedInuser.email);
                       _firestore.collection('messages').add({
                         'Sender': LoggedInuser.email,
                         'text': MessageTxt,
@@ -85,6 +111,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: Text(
                       'Send',
                       style: kSendButtonTextStyle,
+
                     ),
                   ),
                 ],
