@@ -3,6 +3,9 @@ import 'package:flash_chat/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+final _firestore = Firestore.instance;
+FirebaseUser LoggedInuser;
+
 class ChatScreen extends StatefulWidget {
   static const String id = 'chat_screen';
   @override
@@ -11,8 +14,6 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final _auth = FirebaseAuth.instance;
-  FirebaseUser LoggedInuser;
-  final _firestore = Firestore.instance;
   String MessageTxt;
   final msgtxtController = TextEditingController();
 
@@ -73,16 +74,18 @@ class _ChatScreenState extends State<ChatScreen> {
                   );
                 }
                if(snapshot.hasData){
-                  final messages = snapshot.data.documents;
+                  final messages = snapshot.data.documents.reversed;
                   List<MessageBubble> messageWidgets =[];
                 for(var message in messages){
                   final msgText = message.data['text'];
                   final msgSender = message.data['Sender'];
-                  final msgWidget = MessageBubble(msgText: msgText,msgSender: msgSender,);
+                  final currentUser = LoggedInuser.email;
+                  final msgWidget = MessageBubble(msgText: msgText,msgSender: msgSender,isMe: currentUser == msgSender,);
                   messageWidgets.add(msgWidget);
                 }
                 return Expanded(
                   child: ListView(
+                    reverse: true,
                     padding: EdgeInsets.all(10.0),
                     children: messageWidgets,
 
@@ -131,25 +134,26 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 class MessageBubble extends StatelessWidget {
-  MessageBubble({this.msgText,this.msgSender});
+  MessageBubble({this.msgText,this.msgSender,this.isMe});
 
   final String msgText;
   final String msgSender;
+  final bool isMe;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: isMe? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
           Text('$msgSender',style: TextStyle(fontSize: 12.0)),
           Material(
               borderRadius: BorderRadius.circular(30.0),
               elevation: 5.0,
-              color: Colors.lightBlueAccent,
+              color: isMe? Colors.lightBlueAccent : Colors.white,
               child: Padding(
                 padding: EdgeInsets.all(5.0),
-                child: Text('$msgText',style: TextStyle(fontSize: 20.0,color: Colors.white),),
+                child: Text('$msgText',style: TextStyle(fontSize: 20.0,color: isMe? Colors.white : Colors.black),),
           ),
     ),
         ],
