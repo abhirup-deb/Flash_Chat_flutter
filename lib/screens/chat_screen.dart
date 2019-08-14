@@ -14,6 +14,7 @@ class _ChatScreenState extends State<ChatScreen> {
   FirebaseUser LoggedInuser;
   final _firestore = Firestore.instance;
   String MessageTxt;
+  final msgtxtController = TextEditingController();
 
   @override
   void initState() {
@@ -97,15 +98,17 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
-                      style: TextStyle(color: Colors.black),
+                      controller: msgtxtController,
                       onChanged: (value) {
                         MessageTxt = value ;
                       },
                       decoration: kMessageTextFieldDecoration,
+                      style: TextStyle(color: Colors.black),
                     ),
                   ),
                   FlatButton(
                     onPressed: () {
+                      msgtxtController.clear();
                       _firestore.collection('messages').add({
                         'Sender': LoggedInuser.email,
                         'text': MessageTxt,
@@ -136,15 +139,22 @@ class MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: Material(
-          borderRadius: BorderRadius.circular(30.0),
-          elevation: 5.0,
-          color: Colors.lightBlueAccent,
-          child: Padding(
-            padding: EdgeInsets.all(5.0),
-            child: Text('$msgText from $msgSender',style: TextStyle(fontSize: 20.0,color: Colors.white),),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text('$msgSender',style: TextStyle(fontSize: 12.0)),
+          Material(
+              borderRadius: BorderRadius.circular(30.0),
+              elevation: 5.0,
+              color: Colors.lightBlueAccent,
+              child: Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Text('$msgText',style: TextStyle(fontSize: 20.0,color: Colors.white),),
+          ),
+    ),
+        ],
       ),
-    );
+  );
 
   }
 }
