@@ -63,26 +63,32 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+
             StreamBuilder<QuerySnapshot>(
               stream: _firestore.collection('messages').snapshots(),
               builder: (context,snapshot){
                 if(!snapshot.hasData){
+
                   return Center(
+
                     child: CircularProgressIndicator(
+
                       backgroundColor: Colors.lightBlueAccent,
                     ),
                   );
                 }
                if(snapshot.hasData){
-                  final messages = snapshot.data.documents.reversed;
-                  List<MessageBubble> messageWidgets =[];
-                for(var message in messages){
-                  final msgText = message.data['text'];
-                  final msgSender = message.data['Sender'];
-                  final currentUser = LoggedInuser.email;
-                  final msgWidget = MessageBubble(msgText: msgText,msgSender: msgSender,isMe: currentUser == msgSender,);
-                  messageWidgets.add(msgWidget);
-                }
+                 final messages = snapshot.data.documents.reversed;
+                 List<MessageBubble> messageWidgets =[];
+                 for(var message in messages){
+                   final timenow = message.data['time'];
+                   final msgText = message.data['text'];
+                   final msgSender = message.data['Sender'];
+                   final currentUser = LoggedInuser.email;
+                   final msgWidget = MessageBubble(msgText: msgText,msgSender: msgSender,isMe: currentUser == msgSender,time:timenow);
+                   messageWidgets.add(msgWidget);
+                   messageWidgets.sort((a,b) => b.time.compareTo(a.time));
+                 }
                 return Expanded(
                   child: ListView(
                     reverse: true,
@@ -95,37 +101,44 @@ class _ChatScreenState extends State<ChatScreen> {
               },
              ),
             Container(
-              decoration: kMessageContainerDecoration,
+              color: Colors.lightBlueAccent,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    child: TextField(
-                      controller: msgtxtController,
-                      onChanged: (value) {
-                        MessageTxt = value ;
-                      },
-                      decoration: kMessageTextFieldDecoration,
-                      style: TextStyle(color: Colors.black),
+                    child: Container(
+                      child: TextField(
+                        controller: msgtxtController,
+                        onChanged: (value) {
+                          MessageTxt = value ;
+                        },
+                        decoration: InputDecoration(hintStyle: TextStyle(color: Colors.black),hintText: '  Type your message here....',),
+                        style: TextStyle(color: Colors.black),
+                      ),
                     ),
                   ),
-                  FlatButton(
-                    onPressed: () {
-                      msgtxtController.clear();
-                      _firestore.collection('messages').add({
-                        'Sender': LoggedInuser.email,
-                        'text': MessageTxt,
-                      });
-                    },
-                    child: Text(
-                      'Send',
-                      style: kSendButtonTextStyle,
+                  Container(
+                    color: Colors.lightBlueAccent,
+                    child: RaisedButton(
+                      onPressed: () {
+                        msgtxtController.clear();
+                        _firestore.collection('messages').add({
+                          'Sender': LoggedInuser.email,
+                          'text': MessageTxt,
+                          'time' : DateTime.now(),
+                        });
+                      },
+                      child: Icon(
+                        Icons.arrow_forward,
+                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
 
                     ),
                   ),
                 ],
               ),
             ),
+
           ],
         ),
       ),
@@ -134,11 +147,12 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 class MessageBubble extends StatelessWidget {
-  MessageBubble({this.msgText,this.msgSender,this.isMe});
+  MessageBubble({this.msgText,this.msgSender,this.isMe,this.time});
 
   final String msgText;
   final String msgSender;
   final bool isMe;
+  final Timestamp time;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -146,7 +160,7 @@ class MessageBubble extends StatelessWidget {
       child: Column(
         crossAxisAlignment: isMe? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
-          Text('$msgSender',style: TextStyle(fontSize: 12.0)),
+          Text('$msgSender ',style: TextStyle(fontSize: 12.0)),
           Material(
               borderRadius: BorderRadius.circular(30.0),
               elevation: 5.0,
